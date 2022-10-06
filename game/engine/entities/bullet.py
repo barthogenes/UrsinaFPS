@@ -1,11 +1,12 @@
 import random
-import ursina
 
-from enemy import Enemy
+import ursina
+from game.engine.entities.wall import Wall
+from ursina import color
 
 
 class Bullet(ursina.Entity):
-    def __init__(self, position: ursina.Vec3, direction: float, x_direction: float, network, damage: int = random.randint(5, 20), slave=False):
+    def __init__(self, position: ursina.Vec3, direction: float, x_direction: float, damage: int = random.randint(5, 20), slave=False):
         speed = 35
         dir_rad = ursina.math.radians(direction)
         x_dir_rad = ursina.math.radians(x_direction)
@@ -20,6 +21,7 @@ class Bullet(ursina.Entity):
             position=position + self.velocity / speed,
             model="sphere",
             collider="box",
+            color=color.black,
             scale=0.2
         )
 
@@ -27,17 +29,9 @@ class Bullet(ursina.Entity):
         self.direction = direction
         self.x_direction = x_direction
         self.slave = slave
-        self.network = network
 
     def update(self):
         self.position += self.velocity * ursina.time.dt
         hit_info = self.intersects()
-
         if hit_info.hit:
-            if not self.slave:
-                for entity in hit_info.entities:
-                    if isinstance(entity, Enemy):
-                        entity.health -= self.damage
-                        self.network.send_health(entity)
-
             ursina.destroy(self)

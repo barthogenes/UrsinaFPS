@@ -1,4 +1,5 @@
 import os
+
 import ursina
 
 
@@ -8,7 +9,7 @@ class FloorCube(ursina.Entity):
             position=position,
             scale=2,
             model="cube",
-            texture=os.path.join("assets", "floor.png"),
+            texture="floor.png",
             collider="box"
         )
         self.texture.filtering = None
